@@ -101,7 +101,7 @@ You can keep your Render link as well — both can point to the same project.
 
 | Problem | Fix |
 |--------|-----|
-| Build error: `No matching distribution found for tensorflow-cpu==2.12.0` | Hugging Face may use **Python 3.13**, which has no TensorFlow 2.12 wheels. Use the latest `requirements.txt` from this repo (`tensorflow-cpu==2.21.0`) and ensure `README.md` includes **`python_version: 3.11.9`** in the top YAML block (recommended). |
+| Runtime: `cannot import name 'HfFolder' from 'huggingface_hub'` | Gradio **4.44** is incompatible with newer `huggingface_hub` on Spaces. Use **`sdk_version: 5.12.0`** (or newer Gradio 5) in `README.md` YAML and **`flagging_mode="never"`** instead of `allow_flagging` in `app.py` — use the latest files from this repo's `huggingface_space/` folder. |
 | Build fails: `Traffic.h5` not found | Upload `Traffic.h5` to the **root** of the Space (same level as `app.py`). |
 | Build very slow or times out | Normal first time (TensorFlow is large). Click **Factory rebuild** and wait again. |
 | Webcam does not work | Use **Chrome/Edge**, allow camera permission; HF Spaces support webcam on HTTPS. |

@@ -93,8 +93,7 @@ demo = gr.Interface(
     outputs=gr.Textbox(label="Prediction", lines=4),
     title="Auto Traffic Sign Recognizer",
     description=DESCRIPTION,
-    examples=None,
-    allow_flagging="never",
+    flagging_mode="never",
 )
 
 if __name__ == "__main__":
