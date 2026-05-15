@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: auto-traffic-sign-recognizer
+    runtime: python
+    plan: free
+    buildCommand: ./build.sh
+    startCommand: gunicorn textproject.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"

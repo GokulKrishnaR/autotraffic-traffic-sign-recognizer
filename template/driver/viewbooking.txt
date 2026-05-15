@@ -1,0 +1,64 @@
+
+
+{% extends 'driver/base.html' %}
+
+{% load static %}
+{% block header %}
+<style>
+    #grid{
+     margin:10px 0px 100px 0px;   
+    }
+    #grid table{
+        width: 600px;
+        margin-left: 280px;
+        font-size: large;
+    }
+    #grid th{
+        background-color: #00e0c3;
+        color: white;
+        
+    }
+</style>
+      <div id="grid">
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>ADDRESS</th>
+                <th>CONTACT</th>
+                <th>EMAIL</th>
+                <th>STATUS</th>
+               
+            </tr>
+            {% for i in data %}
+            <tr>
+                <td>
+                    {{i.id}}
+                </td>
+                <td>
+                    {{i.uid.uname}}
+                </td>
+                <td>
+                    {{i.uid.uaddress}}
+                </td>
+                <td>
+                    {{i.uid.ucontact}}
+                </td>
+                <td>
+                    {{i.uid.uemail}}
+                </td>
+                <td>
+                    {{i.status}}
+                </td>
+               
+                
+              <td>
+                   <a href="/driverviewbooking?id={{i.id}}">Approve</a>
+                </td>
+                
+            </tr>
+          {% endfor %}
+        </table>
+    </div> 
+
+    {% endblock %}

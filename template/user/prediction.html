@@ -1,0 +1,30 @@
+
+{% extends 'user/base.html' %}
+
+{% load static %}
+{% block header %}
+
+<center>
+{% if prediction %}
+<h1>
+    {{prediction}}
+    <h1>
+        <a href="/imagebyenter">Enter Image</a>
+        <br>
+        <a href="/udp">Open Camera</a>  
+    </h1>
+</h1>
+{% else %}
+<h1>
+    <a href="/imagebyenter">Enter Image</a>
+    <br>
+    <a href="/udp">Open Camera</a>    
+</h1>
+{% endif %}
+</center>
+
+<br>
+<br>
+<br>
+<br>
+{% endblock %}
