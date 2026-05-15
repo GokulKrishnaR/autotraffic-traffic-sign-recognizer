@@ -1,13 +1,13 @@
 """
 Hugging Face Space — Auto Traffic Sign Recognizer
-Upload this folder to a new Gradio Space (see README in parent huggingface_space folder).
+Uses Pillow for resize only (no OpenCV) so `pip install` is smaller and more reliable on HF.
 """
 import os
 
-import cv2
 import gradio as gr
 import numpy as np
 import tensorflow as tf
+from PIL import Image
 
 SIGN_LABELS = [
     "Speed limit (20km/h)", "Speed limit (30km/h)", "Speed limit (50km/h)", "Speed limit (60km/h)",
@@ -33,7 +33,7 @@ def get_model():
     if _model is None:
         if not os.path.exists(MODEL_PATH):
             raise FileNotFoundError(
-                f"Traffic.h5 not found. Add it to this Space (same folder as app.py)."
+                "Traffic.h5 not found. Upload it to this Space (same folder as app.py)."
             )
         _model = tf.keras.models.load_model(MODEL_PATH)
     return _model
@@ -44,13 +44,16 @@ def predict_sign(image):
         return "Please upload an image or use your webcam."
 
     # Gradio gives RGB numpy array (H, W, 3)
-    if len(image.shape) == 2:
-        image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
-    elif image.shape[-1] == 4:
-        image = image[:, :, :3]
+    arr = image.astype("uint8")
+    if len(arr.shape) == 2:
+        arr = np.stack([arr, arr, arr], axis=-1)
+    elif arr.shape[-1] == 4:
+        arr = arr[:, :, :3]
 
-    resized = cv2.resize(image, (30, 30))
-    input_data = np.expand_dims(resized, axis=0) / 255.0
+    pil = Image.fromarray(arr, mode="RGB")
+    pil = pil.resize((30, 30), Image.Resampling.LANCZOS)
+    resized = np.asarray(pil, dtype=np.float32) / 255.0
+    input_data = np.expand_dims(resized, axis=0)
     pred = get_model().predict(input_data, verbose=0)
     confidence = float(pred.max())
     class_index = int(pred.argmax())

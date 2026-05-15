@@ -1,4 +1,5 @@
-gradio==4.44.0
+# Hugging Face installs gradio[oauth] for you — do NOT list gradio here (avoids pip conflicts).
 tensorflow-cpu==2.12.0
-opencv-python-headless==4.9.0.80
-numpy==1.23.5
+numpy>=1.23.5,<2
+protobuf>=3.20.3,<5
+Pillow>=9.0,<11

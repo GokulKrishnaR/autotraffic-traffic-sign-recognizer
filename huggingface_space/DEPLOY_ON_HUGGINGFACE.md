@@ -101,6 +101,7 @@ You can keep your Render link as well — both can point to the same project.
 
 | Problem | Fix |
 |--------|-----|
+| Build fails / exit code 1 during `pip install` | Do **not** put `gradio` in `requirements.txt` (HF installs it). Copy the latest `requirements.txt` from this repo. If it still fails, open the **full build log** and scroll to the red Python/pip error — often `numpy` vs TensorFlow; try a **Factory rebuild**. |
 | Build fails: `Traffic.h5` not found | Upload `Traffic.h5` to the **root** of the Space (same level as `app.py`). |
 | Build very slow or times out | Normal first time (TensorFlow is large). Click **Factory rebuild** and wait again. |
 | Webcam does not work | Use **Chrome/Edge**, allow camera permission; HF Spaces support webcam on HTTPS. |
