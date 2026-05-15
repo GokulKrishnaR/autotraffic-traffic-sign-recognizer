@@ -1,6 +1,7 @@
 """
 Hugging Face Space — Auto Traffic Sign Recognizer
-Uses Pillow for resize only (no OpenCV) so `pip install` is smaller and more reliable on HF.
+Uses Pillow only (no OpenCV). Blocks + queue() pattern works reliably on HF Spaces with Gradio 5.
+Do NOT call demo.launch() — Spaces starts the server for you.
 """
 import os
 
@@ -43,7 +44,6 @@ def predict_sign(image):
     if image is None:
         return "Please upload an image or use your webcam."
 
-    # Gradio gives RGB numpy array (H, W, 3)
     arr = image.astype("uint8")
     if len(arr.shape) == 2:
         arr = np.stack([arr, arr, arr], axis=-1)
@@ -78,23 +78,29 @@ Sacred Heart College, Thevara
 Traffic sign recognition using **TensorFlow** and a **CNN** (43 German traffic sign classes).
 
 - **Upload** a photo of a sign, or  
-- **Webcam** — allow camera access, then capture/use live feed  
+- **Webcam** — allow camera access, then click **Submit**  
 
-Also deployed on Render: [autotraffic-traffic-sign-recognizer.onrender.com](https://autotraffic-traffic-sign-recognizer.onrender.com/)
+Also on Render: [autotraffic-traffic-sign-recognizer.onrender.com](https://autotraffic-traffic-sign-recognizer.onrender.com/)
 """
 
-demo = gr.Interface(
-    fn=predict_sign,
-    inputs=gr.Image(
-        label="Traffic sign image",
-        sources=["upload", "webcam"],
-        type="numpy",
-    ),
-    outputs=gr.Textbox(label="Prediction", lines=4),
-    title="Auto Traffic Sign Recognizer",
-    description=DESCRIPTION,
-    flagging_mode="never",
-)
+with gr.Blocks(title="Auto Traffic Sign Recognizer") as demo:
+    gr.Markdown(DESCRIPTION.strip())
+    with gr.Row():
+        img_in = gr.Image(
+            label="Traffic sign image",
+            sources=["upload", "webcam"],
+            type="numpy",
+        )
+        txt_out = gr.Textbox(label="Prediction", lines=6)
+    with gr.Row():
+        submit_btn = gr.Button("Submit", variant="primary")
+        clear_btn = gr.Button("Clear")
 
-if __name__ == "__main__":
-    demo.launch()
+    submit_btn.click(fn=predict_sign, inputs=img_in, outputs=txt_out)
+
+    def _clear():
+        return None, ""
+
+    clear_btn.click(_clear, outputs=[img_in, txt_out])
+
+demo.queue()

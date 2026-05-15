@@ -101,7 +101,8 @@ You can keep your Render link as well — both can point to the same project.
 
 | Problem | Fix |
 |--------|-----|
-| Runtime: `cannot import name 'HfFolder' from 'huggingface_hub'` | Gradio **4.44** is incompatible with newer `huggingface_hub` on Spaces. Use **`sdk_version: 5.12.0`** (or newer Gradio 5) in `README.md` YAML and **`flagging_mode="never"`** instead of `allow_flagging` in `app.py` — use the latest files from this repo's `huggingface_space/` folder. |
+| Runtime: `cannot import name 'HfFolder' from 'huggingface_hub'` | Gradio **4.44** is incompatible with newer `huggingface_hub` on Spaces. Use **`sdk_version: 5.12.0`** in `README.md` YAML — see latest `huggingface_space/` files. |
+| UI: **Error: No API found** when clicking Submit | Use **`gr.Blocks`** + **`demo.queue()`** and **do not** call `demo.launch()` in `app.py`. Optionally pin **`pydantic>=2,<2.11`** in `requirements.txt`. Sync the latest `app.py` from this repo. |
 | Build fails: `Traffic.h5` not found | Upload `Traffic.h5` to the **root** of the Space (same level as `app.py`). |
 | Build very slow or times out | Normal first time (TensorFlow is large). Click **Factory rebuild** and wait again. |
 | Webcam does not work | Use **Chrome/Edge**, allow camera permission; HF Spaces support webcam on HTTPS. |

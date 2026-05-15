@@ -1,5 +1,7 @@
-# HF Space image may use Python 3.13+; tensorflow-cpu 2.12 has no wheels for 3.13.
-# 2.21 works on 3.11 and 3.13. Gradio is installed by Hugging Face — do not list it here.
+# Gradio is installed by Hugging Face — do not list it here.
+# tensorflow-cpu 2.21: supports Python 3.11+ / 3.13 on Spaces.
 tensorflow-cpu==2.21.0
 numpy>=1.26,<2.2
 Pillow>=9.0,<12
+# Helps avoid "No API found" with Gradio 5 on some Spaces builds.
+pydantic>=2.0,<2.11
