@@ -1,8 +1,17 @@
 # Auto Traffic — Traffic Sign Recognizer
 
-**Repository:** https://github.com/GokulKrishnaR/autotraffic-traffic-sign-recognizer
+**Final Year Undergraduate Project** — B.Sc. Computer Applications (CA)
 
-Single-page app: **upload an image** or **live camera detection** for 43 traffic sign classes (TensorFlow `Traffic.h5`).
+**Live demo:** [https://autotraffic-traffic-sign-recognizer.onrender.com/](https://autotraffic-traffic-sign-recognizer.onrender.com/)
+
+**Repository:** [https://github.com/GokulKrishnaR/autotraffic-traffic-sign-recognizer](https://github.com/GokulKrishnaR/autotraffic-traffic-sign-recognizer)
+
+A web application that recognizes traffic signs using a convolutional neural network (TensorFlow/Keras). Upload an image or use your device camera for real-time detection across **43 German traffic sign classes**.
+
+## Features
+
+- **Image upload** — submit a photo and get the predicted sign class
+- **Live detection** — browser camera sends frames to the server for continuous recognition (works on the hosted site over HTTPS)
 
 ## Run locally
 
@@ -24,10 +33,8 @@ Open http://127.0.0.1:8000/
 4. Environment variables:
    - `DEBUG` = `False`
    - `SECRET_KEY` = (random string)
-   - `ALLOWED_HOSTS` = `your-service-name.onrender.com`
+   - `ALLOWED_HOSTS` = `autotraffic-traffic-sign-recognizer.onrender.com`
 5. Deploy. First build may take 10–20 minutes (TensorFlow).
-
-**Live camera** on the hosted site: open the URL (HTTPS), scroll to **Live detection**, click **Start camera**, allow permission.
 
 ## Project layout
 
