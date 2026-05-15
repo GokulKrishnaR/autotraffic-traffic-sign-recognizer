@@ -101,7 +101,7 @@ You can keep your Render link as well — both can point to the same project.
 
 | Problem | Fix |
 |--------|-----|
-| Build fails / exit code 1 during `pip install` | Do **not** put `gradio` in `requirements.txt` (HF installs it). Copy the latest `requirements.txt` from this repo. If it still fails, open the **full build log** and scroll to the red Python/pip error — often `numpy` vs TensorFlow; try a **Factory rebuild**. |
+| Build error: `No matching distribution found for tensorflow-cpu==2.12.0` | Hugging Face may use **Python 3.13**, which has no TensorFlow 2.12 wheels. Use the latest `requirements.txt` from this repo (`tensorflow-cpu==2.21.0`) and ensure `README.md` includes **`python_version: 3.11.9`** in the top YAML block (recommended). |
 | Build fails: `Traffic.h5` not found | Upload `Traffic.h5` to the **root** of the Space (same level as `app.py`). |
 | Build very slow or times out | Normal first time (TensorFlow is large). Click **Factory rebuild** and wait again. |
 | Webcam does not work | Use **Chrome/Edge**, allow camera permission; HF Spaces support webcam on HTTPS. |

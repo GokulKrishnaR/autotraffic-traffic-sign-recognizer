@@ -35,7 +35,7 @@ def get_model():
             raise FileNotFoundError(
                 "Traffic.h5 not found. Upload it to this Space (same folder as app.py)."
             )
-        _model = tf.keras.models.load_model(MODEL_PATH)
+        _model = tf.keras.models.load_model(MODEL_PATH, compile=False)
     return _model
 
 
