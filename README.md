@@ -1,87 +1,39 @@
 # Auto Traffic — Traffic Sign Recognizer
 
-**Repository:** [github.com/GokulKrishnaR/autotraffic-traffic-sign-recognizer](https://github.com/GokulKrishnaR/autotraffic-traffic-sign-recognizer)
+**Repository:** https://github.com/GokulKrishnaR/autotraffic-traffic-sign-recognizer
 
-Django web application that classifies traffic signs from uploaded images using a TensorFlow/Keras CNN (`Traffic.h5`). It also supports live webcam detection with text-to-speech on a local machine.
-
-## Project structure
-
-| Path | Purpose |
-|------|---------|
-| `textproject/` | Django project settings and URLs |
-| `textapp/` | Views, models, templates, static files |
-| `template/` | HTML templates (login, upload, prediction) |
-| `predict.py` | Image classification logic |
-| `Traffic.h5` | Trained CNN model (required at project root) |
-| `manage.py` | Django management commands |
-| `clientApp.py` | Standalone Flask API (optional, port 5000) |
-| `Model Training/` | Notebook, training scripts, dataset (not required to run the app) |
-
-## Features
-
-- User registration and login (SQLite)
-- Admin panel to view/delete users
-- **Upload image** → predict one of 43 German traffic sign classes
-- **Live webcam** (`/udp/`) → browser camera + real-time detection (works on Render via HTTPS)
+Single-page app: **upload an image** or **live camera detection** for 43 traffic sign classes (TensorFlow `Traffic.h5`).
 
 ## Run locally
 
-### Prerequisites
-
-- Python 3.10 or 3.11 (recommended)
-- `Traffic.h5` in the project root
-
-### Setup
-
 ```bash
 python -m venv venv
-venv\Scripts\activate          # Windows
-pip install -r requirements-deploy.txt
+venv\Scripts\activate
+pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 ```
 
 Open http://127.0.0.1:8000/
 
-> **Note:** `req.txt` is a full machine export and is not used for deployment. Use `requirements-deploy.txt` instead.
-
-## Deploy to the web
-
-GitHub **does not host** Django apps directly (GitHub Pages only serves static sites). Use this flow:
-
-1. **Push code to GitHub** (this repository).
-2. **Deploy on [Render](https://render.com)** (free tier) — connects to your GitHub repo and runs the app.
-
-### Render (recommended)
+## Deploy on Render
 
 1. Push this repo to GitHub.
-2. Sign in at [render.com](https://render.com) with GitHub.
-3. **New → Blueprint** and select this repo (uses `render.yaml`), **or** **New → Web Service** with:
-   - **Build command:** `pip install -r requirements-deploy.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput`
-   - **Start command:** `gunicorn textproject.wsgi:application`
-   - **Environment:** `DEBUG=False`, `ALLOWED_HOSTS=autotraffic-traffic-sign-recognizer.onrender.com` (or your Render URL)
-4. Ensure `Traffic.h5` is committed (≈13 MB).
+2. [render.com](https://render.com) → **New → Blueprint** (uses `render.yaml`) or **Web Service**.
+3. Connect repo `GokulKrishnaR/autotraffic-traffic-sign-recognizer`.
+4. Environment variables:
+   - `DEBUG` = `False`
+   - `SECRET_KEY` = (random string)
+   - `ALLOWED_HOSTS` = `your-service-name.onrender.com`
+5. Deploy. First build may take 10–20 minutes (TensorFlow).
 
-Live webcam uses your **device camera in the browser** (allow permission when prompted). Works on Render over HTTPS.
+**Live camera** on the hosted site: open the URL (HTTPS), scroll to **Live detection**, click **Start camera**, allow permission.
 
-### Other options
+## Project layout
 
-- **Railway / Fly.io / Azure / AWS:** same start command as Render; set env vars from `textproject/settings.py`.
-- **Docker:** `Dockerfile` runs the Flask `clientApp.py`; for Django, change the CMD to `gunicorn textproject.wsgi:application`.
-
-## Environment variables
-
-| Variable | Description |
-|----------|-------------|
-| `SECRET_KEY` | Django secret (required in production) |
-| `DEBUG` | `True` locally, `False` on Render |
-| `ALLOWED_HOSTS` | Comma-separated hostnames, e.g. `myapp.onrender.com` |
-
-## Large files not in Git
-
-These are excluded via `.gitignore` (over GitHub’s 100 MB limit or size):
-
-- `*.weights` (YOLO weights ~235 MB each)
-- `Model Training/Train/` and `Model Training/Test/` datasets
-
-Keep them on your machine or add them as [GitHub Releases](https://docs.github.com/en/repositories/releasing-projects-on-github) if you need to share them.
+| Path | Purpose |
+|------|---------|
+| `textapp/views.py` | Home page + prediction API |
+| `textapp/sign_predictor.py` | Model inference |
+| `template/home.html` | Upload + live camera UI |
+| `Traffic.h5` | Trained model (required) |

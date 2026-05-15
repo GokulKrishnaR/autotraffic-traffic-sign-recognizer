@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="padding-bottom: 3rem;">
+
+    <div class="panel">
+        <h2>Upload image</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="image" accept="image/*" class="upload-input" required>
+            <button type="submit" class="btn btn-success">Detect sign</button>
+        </form>
+        {% if upload_prediction %}
+        <div class="result-box">
+            <strong>Result:</strong> {{ upload_prediction }}
+            {% if upload_confidence %}
+            <br><small class="text-muted">Confidence: {{ upload_confidence }}%</small>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="panel">
+        <h2>Live detection</h2>
+        <p class="text-muted">Allow camera access when prompted. Works on HTTPS (hosted site) and localhost.</p>
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="captureCanvas" style="display:none;"></canvas>
+        <p id="statusMsg" class="text-muted" style="margin-top:12px;">Click Start camera to begin.</p>
+        <h3 id="predictionText" style="color:#4caf50; min-height:1.5em;"></h3>
+        <p id="confidenceText" class="text-muted"></p>
+        <button type="button" id="startBtn" class="btn btn-success">Start camera</button>
+        <button type="button" id="stopBtn" class="btn btn-default" disabled>Stop</button>
+    </div>
+
+</div>
+
+<script>
+(function () {
+    const video = document.getElementById('webcam');
+    const canvas = document.getElementById('captureCanvas');
+    const ctx = canvas.getContext('2d');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    const predictionText = document.getElementById('predictionText');
+    const confidenceText = document.getElementById('confidenceText');
+    let stream = null, intervalId = null, busy = false, lastSpoken = '';
+
+    function getCookie(name) {
+        const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return m ? decodeURIComponent(m[2]) : null;
+    }
+    function speak(text) {
+        if (!window.speechSynthesis || !text || text === lastSpoken) return;
+        lastSpoken = text;
+        const u = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+    }
+    async function captureAndPredict() {
+        if (busy || !stream) return;
+        busy = true;
+        try {
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const res = await fetch('/api/predict-frame/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                body: JSON.stringify({ image: canvas.toDataURL('image/jpeg', 0.85) }),
+            });
+            const data = await res.json();
+            if (data.error) { statusMsg.textContent = data.error; return; }
+            if (data.prediction) {
+                predictionText.textContent = data.prediction;
+                confidenceText.textContent = 'Confidence: ' + (data.confidence * 100).toFixed(1) + '%';
+                speak(data.prediction);
+            } else {
+                predictionText.textContent = 'No sign detected — move closer';
+                confidenceText.textContent = data.confidence
+                    ? (data.confidence * 100).toFixed(1) + '% (below threshold)' : '';
+            }
+        } catch (e) {
+            statusMsg.textContent = 'Prediction failed. Check connection.';
+        } finally { busy = false; }
+    }
+    async function startCamera() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } },
+                audio: false,
+            });
+            video.srcObject = stream;
+            statusMsg.textContent = 'Camera active. Detecting…';
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            intervalId = setInterval(captureAndPredict, 1500);
+        } catch (e) {
+            statusMsg.textContent = 'Camera denied or unavailable. Use HTTPS and allow permission.';
+        }
+    }
+    function stopCamera() {
+        if (intervalId) clearInterval(intervalId);
+        intervalId = null;
+        if (stream) stream.getTracks().forEach(t => t.stop());
+        stream = null;
+        video.srcObject = null;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        statusMsg.textContent = 'Camera stopped.';
+        predictionText.textContent = '';
+        confidenceText.textContent = '';
+        lastSpoken = '';
+        if (window.speechSynthesis) window.speechSynthesis.cancel();
+    }
+    startBtn.addEventListener('click', startCamera);
+    stopBtn.addEventListener('click', stopCamera);
+    window.addEventListener('beforeunload', stopCamera);
+})();
+</script>
+{% endblock %}
