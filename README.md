@@ -1,6 +1,6 @@
 # Auto Traffic — Traffic Sign Recognizer
 
-**Final Year Undergraduate Project** — B.Sc. Computer Applications (CA)
+**Final Year Undergraduate Project** — B.Sc. Computer Applications (Triple Main)
 
 **Live demo:** [https://autotraffic-traffic-sign-recognizer.onrender.com/](https://autotraffic-traffic-sign-recognizer.onrender.com/)
 
