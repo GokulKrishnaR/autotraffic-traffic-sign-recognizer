@@ -1,5 +1,7 @@
 # Auto Traffic — Traffic Sign Recognizer
 
+**Repository:** [github.com/GokulKrishnaR/autotraffic-traffic-sign-recognizer](https://github.com/GokulKrishnaR/autotraffic-traffic-sign-recognizer)
+
 Django web application that classifies traffic signs from uploaded images using a TensorFlow/Keras CNN (`Traffic.h5`). It also supports live webcam detection with text-to-speech on a local machine.
 
 ## Project structure
@@ -57,7 +59,7 @@ GitHub **does not host** Django apps directly (GitHub Pages only serves static s
 3. **New → Blueprint** and select this repo (uses `render.yaml`), **or** **New → Web Service** with:
    - **Build command:** `pip install -r requirements-deploy.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput`
    - **Start command:** `gunicorn textproject.wsgi:application`
-   - **Environment:** `DEBUG=False`, `ALLOWED_HOSTS=your-app.onrender.com`
+   - **Environment:** `DEBUG=False`, `ALLOWED_HOSTS=autotraffic-traffic-sign-recognizer.onrender.com` (or your Render URL)
 4. Ensure `Traffic.h5` is committed (≈13 MB).
 
 Live webcam (`/udp/`) will not work on cloud servers (no camera). Image upload works.
