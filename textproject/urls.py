@@ -26,6 +26,7 @@ urlpatterns = [
     path('login/', views.logins),
     path('userreg/', views.userreg),
     path('udp/', views.udp),
+    path('api/predict-frame/', views.predict_frame),
     path('imagebyenter/', views.imagebyenter),
     path('prediction/', views.predict),
     

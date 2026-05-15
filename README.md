@@ -22,7 +22,7 @@ Django web application that classifies traffic signs from uploaded images using 
 - User registration and login (SQLite)
 - Admin panel to view/delete users
 - **Upload image** → predict one of 43 German traffic sign classes
-- **Live webcam** (`/udp/`) → real-time detection with TTS (local only; needs a camera)
+- **Live webcam** (`/udp/`) → browser camera + real-time detection (works on Render via HTTPS)
 
 ## Run locally
 
@@ -62,7 +62,7 @@ GitHub **does not host** Django apps directly (GitHub Pages only serves static s
    - **Environment:** `DEBUG=False`, `ALLOWED_HOSTS=autotraffic-traffic-sign-recognizer.onrender.com` (or your Render URL)
 4. Ensure `Traffic.h5` is committed (≈13 MB).
 
-Live webcam (`/udp/`) will not work on cloud servers (no camera). Image upload works.
+Live webcam uses your **device camera in the browser** (allow permission when prompted). Works on Render over HTTPS.
 
 ### Other options
 
