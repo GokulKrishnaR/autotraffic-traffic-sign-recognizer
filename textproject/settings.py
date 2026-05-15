@@ -29,10 +29,20 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('1', 'true', 'yes')
 
+_DEFAULT_HOSTS = (
+    'localhost,127.0.0.1,.onrender.com,'
+    'auto-traffic-sign-recognizer.onrender.com,'
+    'autotraffic-traffic-sign-recognizer.onrender.com'
+)
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+    for host in os.environ.get('ALLOWED_HOSTS', _DEFAULT_HOSTS).split(',')
     if host.strip()
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://auto-traffic-sign-recognizer.onrender.com',
+    'https://autotraffic-traffic-sign-recognizer.onrender.com',
 ]
 
 

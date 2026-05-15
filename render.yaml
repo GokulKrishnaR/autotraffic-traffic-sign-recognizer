@@ -3,7 +3,7 @@ services:
     name: autotraffic-traffic-sign-recognizer
     runtime: python
     plan: free
-    buildCommand: ./build.sh
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate --noinput
     startCommand: gunicorn textproject.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
@@ -13,4 +13,4 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ALLOWED_HOSTS
-        value: ".onrender.com"
+        value: auto-traffic-sign-recognizer.onrender.com,autotraffic-traffic-sign-recognizer.onrender.com,.onrender.com
